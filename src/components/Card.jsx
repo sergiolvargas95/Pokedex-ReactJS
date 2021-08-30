@@ -1,39 +1,53 @@
-import React from 'react'
+import React, { useState } from 'react';
 
 const Card = () => {
+        const[ characters, setCharacters ] = useState(" ");
+        const[pokemonChosen, setPokemonChosen] = useState(false);
+        const[ pokemon, setPokemon ] = useState({
+            name: "",
+            species: "",
+            image: "",
+            hp: "",
+            attack: "",
+            defense:"",
+        })
+
+        const searchPokemon = () => {
+            fetch(`https://pokeapi.co/api/v2/pokemon/${characters}`)
+                .then(response => response.json())
+                .then((data) =>
+                    setPokemon({
+                        name: characters,
+                        species: data.species.name,
+                        image: data.sprites.other.dream_world.front_default,
+                        hp: data.stats[0].base_stat,
+                        attack: data.stats[1].base_stat,
+                        defense: data.stats[2].base_stat,
+                        type: data.types[0].type.name,
+                    })
+                )
+                setPokemonChosen(true)
+        }
+
     return (
         <div className="Card">
-            <h1>Blastoise</h1>
-            <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/9.png" alt="pokemon name"/>
-            <p className="Card__Id">N° 9</p>
             <div>
-                <p>Water</p>
+                <input type="text" onChange={(event)=>{setCharacters(event.target.value)}} placeholder="type your pokemon"/>
+                <button onClick={searchPokemon}>Search Pokemon</button>
             </div>
-            <div className="Card__Stats">
-                <div className="Card__Stats--description">
-                    <p>hp</p>
-                    <p>79</p>
-                </div>
-                <div className="Card__Stats--description">
-                    <p>attack</p>
-                    <p>83</p>
-                </div>
-                <div className="Card__Stats--description">
-                    <p>defense</p>
-                    <p>100</p>
-                </div>
-                <div className="Card__Stats--description">
-                    <p>special-attack</p>
-                    <p>85</p>
-                </div>
-                <div className="Card__Stats--description">
-                    <p>special-defense</p>
-                    <p>105</p>
-                </div>
-                <div className="Card__Stats--description">
-                    <p>speed</p>
-                    <p>78</p>
-                </div>
+            <div className="DisplaySection">
+                {!pokemonChosen ?(
+                    <h1>Please choose a pokemon</h1>
+                ) :(
+                    <>
+                    <h1>{pokemon.name}</h1>
+                    <img src={pokemon.image} alt="pokemon image" />
+                    <h3>Type: {pokemon.type} </h3>
+                    <h3>hp: {pokemon.hp} </h3>
+                    <h3>attack: {pokemon.attack} </h3>
+                    <h3>defense: {pokemon.defense} </h3>
+                    </>
+                )}
             </div>
         </div>
     )

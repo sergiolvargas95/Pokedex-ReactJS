@@ -34,7 +34,17 @@ module.exports = {
                     'sass-loader',
                 ]
             },
+            {
+                test: /\.(png|svg|jpg|jpeg|gif)$/i,
+                type: 'assets/resource',
+                generator: {
+                    filename: 'static/images/[hash][ext][query]'
+                },
+            },
         ]
+    },
+    devServer: {
+        historyApiFallback: true,
     },
     plugins: [
         new HtmlWebpackPlugin({
@@ -43,7 +53,7 @@ module.exports = {
             filename: './index.html'
         }),
         new MiniCssExtractPlugin({
-            filename: '[name].css'
+            filename: 'assets/[name].css'
         })
     ],
 }
